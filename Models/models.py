@@ -1,18 +1,13 @@
-from db_connection import Base
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.dialects.postgresql import UUID, JSONB
 import uuid
-import json
-from marshmallow import Schema, fields, post_load, ValidationError
+
 import marshmallow.validate
+from marshmallow import Schema, fields, post_load
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
+from DbConnection import Base
+from HelpFunctions.JsonField import Jsonlist
 
-class Jsonlist(fields.Field):
-  
-  def _deserialize(self, value, attr, obj):
-    if (value is None or value is ""):
-      raise ValidationError("Invalid JSON")
-    return json.loads(value)
 
 class User(Base):
     __tablename__ = 'users'

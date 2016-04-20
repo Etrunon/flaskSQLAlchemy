@@ -26,7 +26,7 @@ def upgrade():
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('address', sa.Text(), nullable=True),
     sa.Column('phone', sa.String(length=50), nullable=True),
-    sa.Column('currency', postgresql.ENUM('eur', 'gpb', name='currency'), nullable=False),
+    sa.Column('currency', postgresql.ENUM('eur', 'gbp', name='currency'), nullable=False),
     sa.Column('swift', sa.String(length=20), nullable=False),
     sa.Column('iban', sa.String(length=20), nullable=False),
     sa.Column('transaction_account', sa.Text(), nullable=False),
