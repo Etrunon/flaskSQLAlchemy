@@ -3,3 +3,4 @@ SQLAlchemy
 psycopg2
 alembic
 marshmallow
+flask_failsafe
