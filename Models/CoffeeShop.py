@@ -1,27 +1,30 @@
-from DbConnection import Base, addQuery
+from uuid import uuid4
+
+import marshmallow.validate
+from marshmallow import Schema, fields, post_load, validates
 from sqlalchemy import Column, String, Text, REAL
 from sqlalchemy.dialects.postgresql import ENUM, UUID, JSONB
-from uuid import uuid4
-from marshmallow import Schema, fields, post_load, validates, ValidationError
-from HelpFunctions.JsonField import Jsonlist
-import marshmallow.validate
-from Constants.Currencies import suppCurrencies
 
-addQuery(Base)
+from DbConnection import Base, add_query
+from HelpFunctions.JsonField import Jsonlist
+from HelpFunctions.Validate import validate_currency, validate_service
+
+add_query(Base)
 
 
 class CoffeeShop(Base):
     __tablename__ = 'coffee_shops'
     id_coffee_shop = Column(UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid4)
-    username = Column(String(50), unique=True, nullable=False)
-    password = Column(String(50), unique=False, nullable=False)
-    name = Column(String(50), unique=False, nullable=False)
+    username = Column(Text, unique=True, nullable=False)
+    password = Column(Text, unique=False, nullable=False)
+    name = Column(Text, unique=False, nullable=False)
+    image = Column(Text, unique=False)
     description = Column(Text, unique=False)
     address = Column(Text, unique=False)
-    phone = Column(String(50), unique=False)
+    phone = Column(Text, unique=False)
     currency = Column(ENUM('eur', 'gpb', name='currency'), unique=False, nullable=False)
-    swift = Column(String(20), unique=False, nullable=False)
-    iban = Column(String(20), unique=False, nullable=False)
+    swift = Column(Text, unique=False, nullable=False)
+    iban = Column(Text, unique=False, nullable=False)
     transaction_account = Column(Text, unique=True, nullable=False)
     latitude = Column(REAL, unique=False)
     longitude = Column(REAL, unique=False)
@@ -75,5 +78,8 @@ class CoffeeShopSchema(Schema):
 
     @validates('currency')
     def validate_currency(self, data):
-        if data not in suppCurrencies:
-            raise ValidationError('Currency misspelled or not supported yet. Sorry')
+        return validate_currency(self, data)
+
+    @validates('service')
+    def validate_service(self, data):
+        return validate_service(self, data)

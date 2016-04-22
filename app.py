@@ -1,11 +1,12 @@
-from flask import Flask, json, request, Response, jsonify
-from DbConnection import db_session
-from Models.CoffeeShop import CoffeeShop, CoffeeShopSchema
-from Models.models import UserSchema, User
+from flask import Flask, request, Response, jsonify
 from werkzeug.exceptions import default_exceptions, HTTPException
-from HelpFunctions.JsonException import InvalidUsage
 
-schema = UserSchema()
+from DbConnection import db_session, get_base
+from HelpFunctions.JsonException import InvalidUsage
+from Models.CoffeeShop import CoffeeShop, CoffeeShopSchema
+from Models.RealProduct import RealProduct, RealProductSchema
+
+schema = CoffeeShopSchema()
 
 __all__ = ['make_json_app']
 
@@ -38,6 +39,7 @@ def make_json_app(import_name, **kwargs):
 
 app = make_json_app(__name__)
 app.response_class = JsonRespose
+Base = get_base()
 
 
 @app.errorhandler(InvalidUsage)
@@ -62,16 +64,7 @@ def create_coffee_shop():
         return CoffeeShopSchema().dumps(cs).data
 
 
-@app.route('/coffeeShops', methods=['GET'])
-def get_coffee_shops():
-    shops = CoffeeShop.query.all()
-    cs, errors = CoffeeShopSchema(many=True).dumps(shops)
-    # if errors:
-    # ToDo return error
-    return cs
-
-
-@app.route('/coffeeShop/details', methods=['GET'])
+@app.route('/coffeeShop', methods=['GET'])
 def get_coffee_shop():
     id_req = request.args.get('id')
     shops = CoffeeShop.query.filter(CoffeeShop.id_coffee_shop == id_req).filter()
@@ -80,26 +73,22 @@ def get_coffee_shop():
     return cs
 
 
-@app.route("/newUser", methods=['POST'])
-def create_user():
-    u, errors = UserSchema().load(request.args)
-    if errors:
-        return Response(json.dumps(errors), mimetype='application/json', status=400)
+@app.route('/coffeeShops', methods=['GET'])
+def get_coffee_shops():
+    shops = CoffeeShop.query.all()
+    cs, errors = CoffeeShopSchema(many=True).dumps(shops)
+    # if errors:
+    # ToDo return error
+    return cs
 
-    db_session.add(u)
-    db_session.commit()
-
-    return Response(UserSchema().dumps(u).data, mimetype='application/json')
-
-
-@app.route('/users', methods=['GET'])
-def get_users():
-    service = request.args.get('service')
-
-    users = User.query.filter(User.json.has_key(service)).all()
-
-    users_serialized = schema.dumps(users, many=True).data
-    return Response(users_serialized, mimetype='application/json')
+# ToDo completare funzioni http
+# @app.route('/delicacy', methods=['GET'])
+# def get_real_product():
+#     id_req = request.args.get('id')
+#     product = RealProduct.query.filter(RealProduct.id_coffee_shop == id_req).filter()
+#     print(shops[0].id_coffee_shop)
+#     cs, errors = CoffeeShopSchema(many=True).dumps(shops)
+#     return cs
 
 
 @app.teardown_appcontext
