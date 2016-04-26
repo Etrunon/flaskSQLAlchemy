@@ -1,1 +1,0 @@
-suppCurrencies = ['eur', 'gbp']

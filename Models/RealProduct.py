@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM, UUID, JSONB, REAL, BOOLEAN
 from uuid import uuid4
 from marshmallow import Schema, fields, post_load, validates
-from HelpFunctions.JsonField import Jsonlist
+from HelpFunctions.CustomFields import Jsonlist
 import marshmallow.validate
 
 from HelpFunctions.Validate import validate_currency, validate_service
@@ -58,8 +58,8 @@ class RealProductSchema(Schema):
 
     @validates('currency')
     def validate_currency(self, data):
-        return validate_currency(self, data)
+        return validate_currency(data)
 
-    @validates('service')
+    @validates('services')
     def validate_service(self, data):
-        return validate_service(self, data)
+        return validate_service(data)

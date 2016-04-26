@@ -1,10 +1,11 @@
+import json
+
 from flask import Flask, request, Response, jsonify
 from werkzeug.exceptions import default_exceptions, HTTPException
 
 from DbConnection import db_session, get_base
 from HelpFunctions.JsonException import InvalidUsage
 from Models.CoffeeShop import CoffeeShop, CoffeeShopSchema
-from Models.RealProduct import RealProduct, RealProductSchema
 
 schema = CoffeeShopSchema()
 
@@ -67,8 +68,21 @@ def create_coffee_shop():
 @app.route('/coffeeShop', methods=['GET'])
 def get_coffee_shop():
     id_req = request.args.get('id')
-    shops = CoffeeShop.query.filter(CoffeeShop.id_coffee_shop == id_req).filter()
-    print(shops[0].id_coffee_shop)
+
+    # shops = db_session.query(CoffeeShop).filter(CoffeeShop.id_coffee_shop == id_req).all()
+    shops = db_session.query(CoffeeShop).filter(CoffeeShop.id_coffee_shop == id_req).all()
+
+    # shops[0].GeoPosition = json.loads(db_session.scalar(shops[0].position.ST_AsGeoJSON()))
+    # print(shops[0].geo_position)
+
+    cs, errors = CoffeeShopSchema(many=True).dumps(shops)
+    return cs
+
+
+@app.route('/coffeeShop/position', methods=['GET'])
+def get_coffee_shop_position():
+    id_req = request.args.get('id')
+    shops = CoffeeShop.query.filter(CoffeeShop.id_coffee_shop == id_req)
     cs, errors = CoffeeShopSchema(many=True).dumps(shops)
     return cs
 

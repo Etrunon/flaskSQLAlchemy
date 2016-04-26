@@ -1,4 +1,4 @@
-"""empty message
+"""Add real_products table
 
 Revision ID: f23cf3dfa1a1
 Revises: 560c8ae838cc

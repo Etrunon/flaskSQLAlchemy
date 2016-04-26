@@ -9,3 +9,4 @@ class Jsonlist(fields.Field):
         if type(value) is str:
             return json.loads(value)
         return value
+

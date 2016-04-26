@@ -1,4 +1,4 @@
-"""empty message
+"""Add coffee_shops table with latitude and longitude as dec numbers.
 
 Revision ID: 560c8ae838cc
 Revises: 
@@ -27,7 +27,7 @@ def upgrade():
                     sa.Column('description', sa.Text(), nullable=True),
                     sa.Column('address', sa.Text(), nullable=True),
                     sa.Column('phone', sa.Text(), nullable=True),
-                    sa.Column('currency', postgresql.ENUM('eur', 'gpb', name='currency'), nullable=False),
+                    sa.Column('currency', postgresql.ENUM('eur', 'gbp', name='currency'), nullable=False),
                     sa.Column('swift', sa.Text(), nullable=False),
                     sa.Column('iban', sa.Text(), nullable=False),
                     sa.Column('transaction_account', sa.Text(), nullable=False),

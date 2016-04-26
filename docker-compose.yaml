@@ -1,7 +1,8 @@
 version: '2'
 services:
   flask:
-    build: .
+    build: ./
+    image: flask
     command: 'python devServerFailsafe.py'
     ports:
       - '80:5000'
@@ -10,6 +11,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=True
   postgres:
+    build: ./Postgres/
     image: postgres
     volumes:
       - db:/var/lib/postgresql/data
